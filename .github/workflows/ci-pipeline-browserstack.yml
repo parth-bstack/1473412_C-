@@ -1,13 +1,7 @@
 name: Android Appium Tests Browserstack Workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      run_emulator:
-        description: "Run emulator check?"
-        type: boolean
-        default: false
-        required: false
+  workflow_dispatch: # manual trigger from GitHub Actions tab
 
 jobs:
   ubuntu-job:
@@ -17,47 +11,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: 'BrowserStack Env Setup'
         uses: 'browserstack/github-actions/setup-env@master'
         with:
-          username:  
-          access-key: 
-          build-name: BUILD_INFO
-          project-name: REPO_NAME
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          build-name: "GitHub Actions Run - ${{ github.run_number }}"
+          project-name: "BrowserStack-App-Automate"
+
       - name: 'BrowserStackLocal Setup'
         uses: 'browserstack/github-actions/setup-local@master'
         with:
           local-testing: start
-          local-identifier: random
+          local-identifier: gha-${{ github.run_id }}
 
       # Setup .NET 8.0
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.X
+          dotnet-version: 8.0.x
           cache: false
 
-      # Setup .NET project  
-      - name: Setup .NET project
+      # Build project
+      - name: Build project
         run: |
-            echo "🔧 Setting up .NET"
-            dotnet --version
-            dotnet build android.csproj --configuration Release
+          echo "🔧 Setting up .NET"
+          dotnet --version
+          dotnet build android.csproj --configuration Release
 
-      - name: Boot emulator and run tests
+      # Run Appium tests on BrowserStack
+      - name: Run Appium tests
         run: |
-          echo "✅ Emulator booting..."
-
-          # Wait a bit more for emulator to fully stabilize
-          echo "⏳ Waiting a bit more for emulator to stabilize..."
-          sleep 30
-
-          # Run tests
-          echo "🧪 Running Appium tests"
+          echo "🧪 Running Appium tests on BrowserStack cloud devices"
           dotnet test android.csproj --logger:"console;verbosity=detailed"
 
       - name: 'BrowserStackLocal Stop'
         uses: 'browserstack/github-actions/setup-local@master'
         with:
           local-testing: stop
-          
