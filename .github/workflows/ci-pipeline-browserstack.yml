@@ -79,19 +79,16 @@ jobs:
           local-identifier: gha-${{ github.run_id }}
 
       # Setup .NET 8.0
-      - name: Setup .NET 8
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
           cache: false
 
-      # Force GitHub Actions to use .NET 8 in PATH
-      - name: Ensure dotnet 8 is used
+      - name: Add .NET 8 to PATH
         run: |
           echo "Adding .NET 8 to PATH"
-          echo "${{ runner.tool_cache }}/dotnet/8.0.x/x64" >> $GITHUB_PATH
-          dotnet --version
-          which dotnet
+          echo "DOTNET_ROOT=$(dirname $(which dotnet))" >> $GITHUB_ENV
 
       # Build project
       - name: Build project
@@ -100,17 +97,23 @@ jobs:
           dotnet --version
           dotnet build android.csproj --configuration Release
 
-      # Run Appium tests on BrowserStack
+      # Run Appium tests on BrowserStack with .NET 8 enforced
       - name: Run Appium tests
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          index: 0   # 🔥 prevents null parsing error
+          DOTNET_ROOT: ${{ env.DOTNET_ROOT }}
+          index: 0   # prevents null parsing error
         run: |
           echo "🧪 Running Appium tests on BrowserStack cloud devices"
           echo "Checking if secrets are available..."
           echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:2}****"
           echo "BROWSERSTACK_ACCESS_KEY: ****"
+
+          # Downgrade BrowserStack SDK to 0.19.0 for .NET 8 compatibility
+          dotnet tool uninstall --global browserstack-sdk || true
+          dotnet tool install --global browserstack-sdk --version 1.22.0
+
           dotnet tool restore
           dotnet test android.csproj --logger:"console;verbosity=detailed"
 
