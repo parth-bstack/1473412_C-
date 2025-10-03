@@ -152,6 +152,7 @@ jobs:
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           build-name: "GitHub Actions Run - ${{ github.run_number }}"
           project-name: "BrowserStack-App-Automate"
+          index: 0
 
       - name: 'BrowserStackLocal Setup'
         uses: 'browserstack/github-actions/setup-local@master'
