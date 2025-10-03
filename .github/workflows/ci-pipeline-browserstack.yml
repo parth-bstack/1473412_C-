@@ -51,7 +51,7 @@ jobs:
           echo "🧪 Running Appium tests via BrowserStack SDK"
           echo "Checking if secrets are available..."
           echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:10}****"
-          echo "BROWSERSTACK_ACCESS_KEY: ${BROWSERSTACK_ACCESS_KEY:0:10}
+          echo "BROWSERSTACK_ACCESS_KEY: ${BROWSERSTACK_ACCESS_KEY}
           dotnet browserstack-sdk test android.csproj --logger:"console;verbosity=detailed"
 
 
