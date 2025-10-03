@@ -50,7 +50,6 @@
 #         uses: 'browserstack/github-actions/setup-local@master'
 #         with:
 #           local-testing: stop
-
 name: Android Appium Tests Browserstack Workflow
 
 on:
@@ -80,16 +79,24 @@ jobs:
           local-identifier: gha-${{ github.run_id }}
 
       # Setup .NET 8.0
-      - name: Setup .NET
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
           cache: false
 
+      # Force GitHub Actions to use .NET 8 in PATH
+      - name: Ensure dotnet 8 is used
+        run: |
+          echo "Adding .NET 8 to PATH"
+          echo "${{ runner.tool_cache }}/dotnet/8.0.x/x64" >> $GITHUB_PATH
+          dotnet --version
+          which dotnet
+
       # Build project
       - name: Build project
         run: |
-          echo "🔧 Setting up .NET"
+          echo "🔧 Building project with .NET"
           dotnet --version
           dotnet build android.csproj --configuration Release
 
