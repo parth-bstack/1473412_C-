@@ -24,7 +24,7 @@ namespace BrowserStack
 			//appiumOptions.AddAdditionalAppiumOption(MobileCapabilityType.DeviceName, "Samsung Galaxy S20");
 			//appiumOptions.AddAdditionalAppiumOption(MobileCapabilityType.PlatformName, "Android");
 			//appiumOptions.AddAdditionalAppiumOption(MobileCapabilityType.PlatformVersion, "10");
-			driver = new AndroidDriver(new Uri("http://127.0.0.1:4723/wd/hub"), appiumOptions);
+			driver = new AndroidDriver(new Uri("https://hub.browserstack.com/wd/hub"), appiumOptions);
 		}
 
 		[TearDown]

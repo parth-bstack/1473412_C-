@@ -101,6 +101,9 @@ jobs:
           index: 0   # 🔥 prevents null parsing error
         run: |
           echo "🧪 Running Appium tests on BrowserStack cloud devices"
+          echo "Checking if secrets are available..."
+          echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:2}****"
+          echo "BROWSERSTACK_ACCESS_KEY: ****"
           dotnet tool restore
           dotnet test android.csproj --logger:"console;verbosity=detailed"
 
