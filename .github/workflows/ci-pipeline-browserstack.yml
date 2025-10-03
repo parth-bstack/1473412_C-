@@ -42,8 +42,16 @@ jobs:
 
       # Run Appium tests on BrowserStack
       - name: Run Appium tests
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          index: 0
         run: |
           echo "🧪 Running Appium tests on BrowserStack cloud devices"
+          echo "🧪 Running Appium tests via BrowserStack SDK"
+          echo "Checking if secrets are available..."
+          echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:10}****"
+          echo "BROWSERSTACK_ACCESS_KEY: ${BROWSERSTACK_ACCESS_KEY:0:10}
           dotnet browserstack-sdk test android.csproj --logger:"console;verbosity=detailed"
 
 
