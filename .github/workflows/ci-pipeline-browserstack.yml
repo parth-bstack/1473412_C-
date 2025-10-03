@@ -1,56 +1,3 @@
-# name: Android Appium Tests Browserstack Workflow
-
-# on:
-#   workflow_dispatch: # manual trigger from GitHub Actions tab
-
-# jobs:
-#   ubuntu-job:
-#     name: 'BrowserStack Test on Ubuntu'
-#     runs-on: ubuntu-latest
-#     environment: test
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       - name: 'BrowserStack Env Setup'
-#         uses: 'browserstack/github-actions/setup-env@master'
-#         with:
-#           username: ${{ secrets.BROWSERSTACK_USERNAME }}
-#           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-#           build-name: "GitHub Actions Run - ${{ github.run_number }}"
-#           project-name: "BrowserStack-App-Automate"
-
-#       - name: 'BrowserStackLocal Setup'
-#         uses: 'browserstack/github-actions/setup-local@master'
-#         with:
-#           local-testing: start
-#           local-identifier: gha-${{ github.run_id }}
-
-#       # Setup .NET 8.0
-#       - name: Setup .NET
-#         uses: actions/setup-dotnet@v4
-#         with:
-#           dotnet-version: 8.0.x
-#           cache: false
-
-#       # Build project
-#       - name: Build project
-#         run: |
-#           echo "🔧 Setting up .NET"
-#           dotnet --version
-#           dotnet build android.csproj --configuration Release
-
-#       # Run Appium tests on BrowserStack
-#       - name: Run Appium tests
-#         run: |
-#           echo "🧪 Running Appium tests on BrowserStack cloud devices"
-#           dotnet test android.csproj --logger:"console;verbosity=detailed"
-
-#       - name: 'BrowserStackLocal Stop'
-#         uses: 'browserstack/github-actions/setup-local@master'
-#         with:
-#           local-testing: stop
-
 name: Android Appium Tests Browserstack Workflow
 
 on:
@@ -86,37 +33,90 @@ jobs:
           dotnet-version: 8.0.x
           cache: false
 
-      - name: Add .NET 8 to PATH
-        run: |
-          echo "Adding .NET 8 to PATH"
-          echo "DOTNET_ROOT=$(dirname $(which dotnet))" >> $GITHUB_ENV
-
       # Build project
       - name: Build project
         run: |
-          echo "🔧 Building project with .NET"
+          echo "🔧 Setting up .NET"
           dotnet --version
           dotnet build android.csproj --configuration Release
 
-      # Run Appium tests on BrowserStack via SDK CLI
-      - name: Run Appium tests via BrowserStack SDK
-        env:
-          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          DOTNET_ROOT: ${{ env.DOTNET_ROOT }}
+      # Run Appium tests on BrowserStack
+      - name: Run Appium tests
         run: |
-          echo "🧪 Running Appium tests via BrowserStack SDK"
-          echo "Checking if secrets are available..."
-          echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:2}****"
-          echo "BROWSERSTACK_ACCESS_KEY: ****"
-
-          # Restore tools
-          dotnet tool restore
-
-          # Run tests using BrowserStack SDK CLI
-          dotnet browserstack-sdk --add-patch-bstack obj/Release/net8.0/ bin/Release/net8.0/android.dll Release
+          echo "🧪 Running Appium tests on BrowserStack cloud devices"
+          dotnet browserstack-sdk test android.csproj --logger:"console;verbosity=detailed"
 
       - name: 'BrowserStackLocal Stop'
         uses: 'browserstack/github-actions/setup-local@master'
         with:
           local-testing: stop
+
+# name: Android Appium Tests Browserstack Workflow
+
+# on:
+#   workflow_dispatch: # manual trigger from GitHub Actions tab
+
+# jobs:
+#   ubuntu-job:
+#     name: 'BrowserStack Test on Ubuntu'
+#     runs-on: ubuntu-latest
+#     environment: test
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: 'BrowserStack Env Setup'
+#         uses: 'browserstack/github-actions/setup-env@master'
+#         with:
+#           username: ${{ secrets.BROWSERSTACK_USERNAME }}
+#           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+#           build-name: "GitHub Actions Run - ${{ github.run_number }}"
+#           project-name: "BrowserStack-App-Automate"
+
+#       - name: 'BrowserStackLocal Setup'
+#         uses: 'browserstack/github-actions/setup-local@master'
+#         with:
+#           local-testing: start
+#           local-identifier: gha-${{ github.run_id }}
+
+#       # Setup .NET 8.0
+#       - name: Setup .NET
+#         uses: actions/setup-dotnet@v4
+#         with:
+#           dotnet-version: 8.0.x
+#           cache: false
+
+#       - name: Add .NET 8 to PATH
+#         run: |
+#           echo "Adding .NET 8 to PATH"
+#           echo "DOTNET_ROOT=$(dirname $(which dotnet))" >> $GITHUB_ENV
+
+#       # Build project
+#       - name: Build project
+#         run: |
+#           echo "🔧 Building project with .NET"
+#           dotnet --version
+#           dotnet build android.csproj --configuration Release
+
+#       # Run Appium tests on BrowserStack via SDK CLI
+#       - name: Run Appium tests via BrowserStack SDK
+#         env:
+#           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+#           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+#           DOTNET_ROOT: ${{ env.DOTNET_ROOT }}
+#         run: |
+#           echo "🧪 Running Appium tests via BrowserStack SDK"
+#           echo "Checking if secrets are available..."
+#           echo "BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME:0:2}****"
+#           echo "BROWSERSTACK_ACCESS_KEY: ****"
+
+#           # Restore tools
+#           dotnet tool restore
+
+#           # Run tests using BrowserStack SDK CLI
+#           dotnet browserstack-sdk --add-patch-bstack obj/Release/net8.0/ bin/Release/net8.0/android.dll Release
+
+#       - name: 'BrowserStackLocal Stop'
+#         uses: 'browserstack/github-actions/setup-local@master'
+#         with:
+#           local-testing: stop
