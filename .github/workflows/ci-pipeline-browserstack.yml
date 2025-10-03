@@ -44,7 +44,7 @@ jobs:
       - name: Run Appium tests
         run: |
           echo "🧪 Running Appium tests on BrowserStack cloud devices"
-          dotnet browserstack-sdk test android.csproj --logger:"console;verbosity=detailed"
+          dotnet browserstack-sdk test
 
       - name: 'BrowserStackLocal Stop'
         uses: 'browserstack/github-actions/setup-local@master'
