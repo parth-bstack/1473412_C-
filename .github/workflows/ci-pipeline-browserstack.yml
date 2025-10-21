@@ -60,7 +60,7 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
         run: |
           echo "🧪 Running Appium tests via BrowserStack SDK"
-          dotnet browserstack-sdk test bin/Release/net8.0/android.dll --logger:"console;verbosity=detailed"
+          dotnet browserstack-sdk bin/Release/net8.0/android.dll --logger:"console;verbosity=detailed"
 
       # 9️⃣ Stop BrowserStack Local
       - name: BrowserStackLocal Stop
